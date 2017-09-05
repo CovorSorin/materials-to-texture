@@ -17,15 +17,15 @@ img = Image.new('RGB', (tiles * size, tiles * size), (255, 255, 255))
 draw = ImageDraw.Draw(img)
 
 index = 0
-for x in range(0, tiles):
-    x = x * size
-    for y in range(0, tiles):
-        y = y * size
+
+for y in range(0, tiles):
+    y = y * size
+    for x in range(0, tiles):
+        x = x * size
         if (index < len(colors)):
             draw.rectangle(((x, y), (size + x, size + y)), fill = colors[index])
         else:
             draw.rectangle(((x, y), (size + x, size + y)), fill = "white")
         index = index + 1
-        print(x , y)
 
 img.save("uv.png")
