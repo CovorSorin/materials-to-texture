@@ -1,3 +1,4 @@
-colors.csv
-uv.png
+*.csv
+*.png
 *.blend
+*.blend1
