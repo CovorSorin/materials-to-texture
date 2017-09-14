@@ -13,7 +13,6 @@ for material in materials:
     r = int(255 * pow(color.r, gamma))
     g = int(255 * pow(color.g, gamma))
     b = int(255 * pow(color.b, gamma))
-    print(str(r) + ',' + str(g) + ',' + str(b) + '\n')
     fo.write(str(r) + ',' + str(g) + ',' + str(b) + '\n');
 
 fo.close()
