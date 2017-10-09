@@ -7,8 +7,10 @@ def moveFace():
 	area = bpy.context.area.type
 	bpy.context.area.type = 'IMAGE_EDITOR'
 	bpy.ops.uv.select_all(action = 'TOGGLE')
+	bpy.ops.transform.resize(value = (0.1, 0.1, 0.1), constraint_axis = (False, False, False), constraint_orientation = 'GLOBAL', mirror = False, proportional = 'DISABLED', proportional_edit_falloff = 'SMOOTH', proportional_size = 1)
 	bpy.ops.transform.translate(value = (1, 1, 0), constraint_axis = (False, False, False), constraint_orientation = 'GLOBAL', mirror = False, proportional = 'DISABLED', proportional_edit_falloff = 'SMOOTH', proportional_size = 1)
 	bpy.context.area.type = area
+	bpy.ops.uv.select_all(action = 'TOGGLE')
 
 def unwrap(obj):
 	bpy.ops.object.mode_set(mode = 'EDIT')
