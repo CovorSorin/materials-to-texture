@@ -4,7 +4,7 @@ bl_info = {
     "author": "Sorin Covor",
     "version": (1, 0),
     "blender": (2, 7, 9),
-    "location": "View3D > Object > Export Colors",
+    "location": "File > Export Colors",
     "description": "Exports a list with all the colors in the scene.",
     "warning": "",
     "wiki_url": "",
