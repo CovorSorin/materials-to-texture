@@ -55,11 +55,13 @@ def add_object_button(self, context):
 
 def register():  
     bpy.utils.register_class(ExportColors)
-    bpy.types.INFO_MT_file.prepend(add_object_button)
+    bpy.types.INFO_MT_file_export.prepend(add_object_button)
+    # prepend -> adds at the top of the menu
+    # append -> adds at the bottom of the menu
 
 def unregister():
     bpy.utils.unregister_class(ExportColors)
-    bpy.types.INFO_MT_file.remove(add_object_button)
+    bpy.types.INFO_MT_file_export.remove(add_object_button)
 
 if __name__ == "__main__":  
     register()
