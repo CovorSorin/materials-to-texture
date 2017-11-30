@@ -14,9 +14,7 @@ bl_info = {
 
 import bpy
 
-def grid(x, y):
-    width = 128
-    height = 128
+def grid(width, height, x, y):
     origList = []
     for i in range(width * height):
         origList.append(i)
@@ -25,9 +23,9 @@ def grid(x, y):
   
     return splitList[y][x]
 
-def drawPixel(image_object, x,y, R, G, B):
+def drawPixel(image_object, w, h, x, y, R, G, B):
     # multiplied by four because of r, g, b, a pattern
-    pixelNumber = grid(x,y) * 4
+    pixelNumber = grid(w,h,x,y) * 4
     
     # this is a quick way to iterate
     image_object.pixels[pixelNumber] = R
@@ -35,34 +33,39 @@ def drawPixel(image_object, x,y, R, G, B):
     image_object.pixels[pixelNumber+2] = B
     image_object.pixels[pixelNumber+3] = 1.0
     
-def drawRectangle(image_object, size, x1, y1, R, G, B):
+def drawRectangle(image_object, w,h,size, x1, y1, R, G, B):
     size = int(size)
     for x in range(x1, x1 + size):
         for y in range(y1, y1 + size):
-            drawPixel(image_object,x,y, R, G, B)
+            drawPixel(image_object,w,h,x,y, R, G, B)
 
 def write_data(context, filepath, size):
-    
-    image = bpy.data.images.new("image", width = 128, height = 128)
+    tiles_x = 8
+    tiles_y = 8
+    index = 0
+    size = 4
+    width = tiles_x * size
+    height = tiles_y * size
+    image = bpy.data.images.new("image", width = width, height = height)
 
     materials = bpy.data.materials
 
 
-    tiles_x = 4
-    tiles_y = 4
-    index = 0
-    size = 4
 
+    # used for gamma correction
+    # gamma = 1 / 2.2 -> WINDOWS
+    # gamma = 1 / 1.8 -> MAC
+    gamma = 1 / 2.2
     for y in range(0, tiles_y):
         y = y * size
         for x in range(0, tiles_x):
             x = x * size
             if len(materials) > index:
                 color = materials[index].diffuse_color
-                r = color.r
-                g = color.g
-                b = color.b
-                drawRectangle(image, size, x, y, r, g, b)
+                r = pow(color.r, gamma)
+                g = pow(color.g, gamma)
+                b = pow(color.b, gamma)
+                drawRectangle(image, width, height, size, x, y, r, g, b)
                 index = index + 1
 
     # write image
