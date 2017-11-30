@@ -14,24 +14,45 @@ bl_info = {
 
 import bpy
 
-def write_data(context, filepath):
-    f = open(filepath, 'w', encoding = 'utf-8')
+def grid(x, y):
+    width = 128
+    height = 128
+    origList = []
+    for i in range(width * height):
+        origList.append(i)
     
-    materials = bpy.data.materials
+    splitList = [origList[i : i + width] for i in range(0, len(origList), width)]
+  
+    return splitList[y][x]
 
-    # used for gamma correction
-    # gamma = 1 / 2.2 -> WINDOWS
-    # gamma = 1 / 1.8 -> MAC
-    gamma = 1 / 2.2
+def drawPixel(image_object, x,y, R, G, B):
+    # multiplied by four because of r, g, b, a pattern
+    pixelNumber = grid(x,y) * 4
+    
+    # this is a quick way to iterate
+    image_object.pixels[pixelNumber] = R
+    image_object.pixels[pixelNumber+1] = G
+    image_object.pixels[pixelNumber+2] = B
+    image_object.pixels[pixelNumber+3] = 1.0
+    
+def drawRectangle(image_object, size, x1, y1, R, G, B):
+    size = int(size)
+    for x in range(x1, x1 + size):
+        for y in range(y1, y1 + size):
+            drawPixel(image_object,x,y, R, G, B)
 
-    for material in materials:
-        color = material.diffuse_color
-        r = int(255 * pow(color.r, gamma))
-        g = int(255 * pow(color.g, gamma))
-        b = int(255 * pow(color.b, gamma))
-        f.write(str(r) + ',' + str(g) + ',' + str(b) + '\n');
+def write_data(context, filepath, size):
+    
+    image = bpy.data.images.new("image", width = 128, height = 128)
 
-    f.close() 
+    drawRectangle(image, size, 0, 16, 1, 0.5, 0.5)
+    drawRectangle(image, size, 16, 16, 0.5, 1, 1)
+
+    # write image
+    image.filepath_raw = filepath
+    image.file_format = 'PNG'
+    #image.scale(512, 512)
+    image.save()
     return {'FINISHED'}
 
 # ExportHelper is a helper class, defines filename and
@@ -45,13 +66,25 @@ class ExportColors(Operator, ExportHelper):
     bl_label = "Export Colors" 
 
     # ExportHelper mixin class uses this
-    filename_ext = ".csv"
+    filename_ext = ".png"
+
+    # tile size
+    size = EnumProperty(
+            name = "Tile Size",
+            description = "Choose the tile size for the colors in the texture.",
+            items = (('4', "4px", ""),
+                     ('8', "8px", ""),
+                     ('16', "16px", ""),
+                     ('32', "32px", ""),
+                     ('64', "64px", "")),
+            default = '4'
+        )
 
     def execute(self, context):
-        return write_data(context, self.filepath)
+        return write_data(context, self.filepath, self.size)
 
 def add_object_button(self, context):
-    self.layout.operator(ExportColors.bl_idname, text = "Export Colors", icon = "COLORSET_02_VEC")
+    self.layout.operator(ExportColors.bl_idname, text = "Export Colors", icon = "COLORSET_03_VEC")
 
 def register():  
     bpy.utils.register_class(ExportColors)
