@@ -106,8 +106,11 @@ class ExportColors(Operator, ExportHelper):
             name = "Tiles X",
             description = "Choose the number of tiles.",
             items = (('2', "2 tiles", ""),
+                     ('3', "3 tiles", ""),
                      ('4', "4 tiles", ""),
+                     ('5', "5 tiles", ""),
                      ('6', "6 tiles", ""),
+                     ('7', "7 tiles", ""),
                      ('8', "8 tiles", "")),
             default = '4'
         )
@@ -116,8 +119,11 @@ class ExportColors(Operator, ExportHelper):
         name = "Tiles Y",
         description = "Choose the number of tiles.",
         items = (('2', "2 tiles", ""),
+                 ('3', "3 tiles", ""),
                  ('4', "4 tiles", ""),
+                 ('5', "5 tiles", ""),
                  ('6', "6 tiles", ""),
+                 ('7', "7 tiles", ""),
                  ('8', "8 tiles", "")),
         default = '4'
     )
