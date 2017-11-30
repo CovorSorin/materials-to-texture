@@ -4,8 +4,8 @@ bl_info = {
     "author": "Sorin Covor",
     "version": (1, 0),
     "blender": (2, 7, 9),
-    "location": "File > Export Colors",
-    "description": "Exports a csv file with all the colors in the scene.",
+    "location": "File > Export > Export Colors",
+    "description": "Exports an image file with all the colors in the scene.",
     "warning": "",
     "wiki_url": "",
     "tracker_url": "",
@@ -14,6 +14,7 @@ bl_info = {
 
 import bpy
 
+# creates a grid of pixels
 def grid(width, height, x, y):
     origList = []
     for i in range(width * height):
@@ -23,39 +24,40 @@ def grid(width, height, x, y):
   
     return splitList[y][x]
 
-def drawPixel(image_object, w, h, x, y, R, G, B):
-    # multiplied by four because of r, g, b, a pattern
-    pixelNumber = grid(w,h,x,y) * 4
+def drawPixel(image, w, h, x, y, R, G, B):
+    # multiplied by 4 because of RGBA pattern
+    pixelNumber = grid(w, h, x, y) * 4
     
-    # this is a quick way to iterate
-    image_object.pixels[pixelNumber] = R
-    image_object.pixels[pixelNumber+1] = G
-    image_object.pixels[pixelNumber+2] = B
-    image_object.pixels[pixelNumber+3] = 1.0
+    # iterate through the color channels
+    image.pixels[pixelNumber] = R
+    image.pixels[pixelNumber + 1] = G
+    image.pixels[pixelNumber + 2] = B
+    image.pixels[pixelNumber + 3] = 1.0
     
-def drawRectangle(image_object, w,h,size, x1, y1, R, G, B):
+def drawRectangle(image, w, h, size, x1, y1, R, G, B):
     size = int(size)
     for x in range(x1, x1 + size):
         for y in range(y1, y1 + size):
-            drawPixel(image_object,w,h,x,y, R, G, B)
+            drawPixel(image, w, h, x, y, R, G, B)
 
 def write_data(context, filepath, size):
+    
     tiles_x = 8
     tiles_y = 8
-    index = 0
     size = 4
+
     width = tiles_x * size
     height = tiles_y * size
+
     image = bpy.data.images.new("image", width = width, height = height)
-
     materials = bpy.data.materials
-
-
+    index = 0   
 
     # used for gamma correction
     # gamma = 1 / 2.2 -> WINDOWS
     # gamma = 1 / 1.8 -> MAC
     gamma = 1 / 2.2
+
     for y in range(0, tiles_y):
         y = y * size
         for x in range(0, tiles_x):
@@ -68,11 +70,11 @@ def write_data(context, filepath, size):
                 drawRectangle(image, width, height, size, x, y, r, g, b)
                 index = index + 1
 
-    # write image
     image.filepath_raw = filepath
     image.file_format = 'PNG'
-    #image.scale(512, 512)
+    #image.scale(width, height)
     image.save()
+
     return {'FINISHED'}
 
 # ExportHelper is a helper class, defines filename and
@@ -99,6 +101,28 @@ class ExportColors(Operator, ExportHelper):
                      ('64', "64px", "")),
             default = '4'
         )
+
+    tiles_x = EnumProperty(
+            name = "Tiles X",
+            description = "Choose the number of tiles.",
+            items = (('1', "4px", ""),
+                     ('2', "2 tiles", ""),
+                     ('4', "4 tiles", ""),
+                     ('6', "6 tiles", ""),
+                     ('8', "8 tiles", "")),
+            default = '4'
+        )
+
+    tiles_y = EnumProperty(
+        name = "Tiles Y",
+        description = "Choose the number of tiles.",
+        items = (('1', "4px", ""),
+                 ('2', "2 tiles", ""),
+                 ('4', "4 tiles", ""),
+                 ('6', "6 tiles", ""),
+                 ('8', "8 tiles", "")),
+        default = '4'
+    )
 
     def execute(self, context):
         return write_data(context, self.filepath, self.size)

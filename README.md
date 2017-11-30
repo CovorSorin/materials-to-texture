@@ -5,3 +5,6 @@ https://stackoverflow.com/questions/17910543/convert-gamma-rgb-curves-to-rgb-cur
 
 Useful UV stuff: <br>
 https://blender.stackexchange.com/questions/70676/python-selecting-faces-from-a-material-index <br>
+
+Pixel art in blender: <br>
+http://blendersushi.blogspot.ro/2013/03/python-pixel-art-in-blender.html <br>
