@@ -47,16 +47,23 @@ def write_data(context, filepath, size):
 
     materials = bpy.data.materials
 
-    x = 0
-    y = 0
-    for material in materials:
-        color = material.diffuse_color
-        r = color.r
-        g = color.g
-        b = color.b
-        drawRectangle(image, size, x, y, r, g, b)
-        x = x + 4
-        y = y + 4
+
+    tiles_x = 4
+    tiles_y = 4
+    index = 0
+    size = 4
+
+    for y in range(0, tiles_y):
+        y = y * size
+        for x in range(0, tiles_x):
+            x = x * size
+            if len(materials) > index:
+                color = materials[index].diffuse_color
+                r = color.r
+                g = color.g
+                b = color.b
+                drawRectangle(image, size, x, y, r, g, b)
+                index = index + 1
 
     # write image
     image.filepath_raw = filepath
