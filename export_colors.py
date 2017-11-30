@@ -40,11 +40,11 @@ def drawRectangle(image, w, h, size, x1, y1, R, G, B):
         for y in range(y1, y1 + size):
             drawPixel(image, w, h, x, y, R, G, B)
 
-def write_data(context, filepath, size):
+def write_data(context, filepath, size, tiles_x, tiles_y):
     
-    tiles_x = 8
-    tiles_y = 8
-    size = 4
+    tiles_x = int(tiles_x)
+    tiles_y = int(tiles_y)
+    size = int(size)
 
     width = tiles_x * size
     height = tiles_y * size
@@ -105,8 +105,7 @@ class ExportColors(Operator, ExportHelper):
     tiles_x = EnumProperty(
             name = "Tiles X",
             description = "Choose the number of tiles.",
-            items = (('1', "4px", ""),
-                     ('2', "2 tiles", ""),
+            items = (('2', "2 tiles", ""),
                      ('4', "4 tiles", ""),
                      ('6', "6 tiles", ""),
                      ('8', "8 tiles", "")),
@@ -116,8 +115,7 @@ class ExportColors(Operator, ExportHelper):
     tiles_y = EnumProperty(
         name = "Tiles Y",
         description = "Choose the number of tiles.",
-        items = (('1', "4px", ""),
-                 ('2', "2 tiles", ""),
+        items = (('2', "2 tiles", ""),
                  ('4', "4 tiles", ""),
                  ('6', "6 tiles", ""),
                  ('8', "8 tiles", "")),
@@ -125,10 +123,10 @@ class ExportColors(Operator, ExportHelper):
     )
 
     def execute(self, context):
-        return write_data(context, self.filepath, self.size)
+        return write_data(context, self.filepath, self.size, self.tiles_x, self.tiles_y)
 
 def add_object_button(self, context):
-    self.layout.operator(ExportColors.bl_idname, text = "Export Colors", icon = "COLORSET_03_VEC")
+    self.layout.operator(ExportColors.bl_idname, text = "Export Colors", icon = "COLORSET_02_VEC")
 
 def register():  
     bpy.utils.register_class(ExportColors)
